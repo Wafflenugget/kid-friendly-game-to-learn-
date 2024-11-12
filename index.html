@@ -48,6 +48,12 @@
             margin-top: 20px;
         }
 
+        button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +62,46 @@
     </header>
     <main>
         <p>Enjoy the educational games we’ve created!</p>
+
+        <!-- Buttons to start games -->
+        <button onclick="startMathQuiz()">Start Math Quiz</button>
+        <button onclick="startWordGame()">Start Word Guessing Game</button>
+        <button onclick="startMemoryGame()">Start Memory Game</button>
     </main>
+
+    <script>
+        // Math Quiz Game
+        function startMathQuiz() {
+            let num1 = Math.floor(Math.random() * 10);
+            let num2 = Math.floor(Math.random() * 10);
+            let answer = num1 + num2;
+            let userAnswer = prompt(`What is ${num1} + ${num2}?`);
+
+            if (parseInt(userAnswer) === answer) {
+                alert("Correct!");
+            } else {
+                alert("Oops! Try again.");
+            }
+        }
+
+        // Word Guessing Game
+        function startWordGame() {
+            const words = ["apple", "banana", "cherry", "grape"];
+            let randomWord = words[Math.floor(Math.random() * words.length)];
+            let guess = prompt("Guess the word!");
+
+            if (guess.toLowerCase() === randomWord) {
+                alert("You guessed correctly!");
+            } else {
+                alert("Wrong! Try again.");
+            }
+        }
+
+        // Memory Game (Simple Example)
+        function startMemoryGame() {
+            alert("Memory Game Coming Soon!");
+            // You can add memory matching game logic here
+        }
+    </script>
 </body>
 </html>
