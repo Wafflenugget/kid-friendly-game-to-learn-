@@ -67,12 +67,13 @@
     </main>
 
     <script>
+        // Math Quiz Game with Grade Selection and Timer
         function startMathQuiz() {
             const grade = prompt("Choose your grade (1-12):");
+            const timeLimit = prompt("Choose a time limit (1, 2, or 3 minutes):") * 60 * 1000;
             const questions = generateMathQuestions(grade);
             let score = 0;
             const startTime = new Date().getTime();
-            const timeLimit = 2 * 60 * 1000; // 2 minutes
 
             for (let i = 0; i < 10; i++) {
                 if (new Date().getTime() - startTime > timeLimit) {
@@ -97,13 +98,32 @@
         function generateMathQuestions(grade) {
             const questions = [];
             for (let i = 0; i < 10; i++) {
-                const num1 = Math.floor(Math.random() * 10 * grade);
-                const num2 = Math.floor(Math.random() * 10 * grade);
+                const num1 = Math.floor(Math.random() * (10 * grade));
+                const num2 = Math.floor(Math.random() * (10 * grade));
                 const answer = num1 + num2;
                 questions.push({ text: `What is ${num1} + ${num2}?`, answer });
             }
             return questions;
         }
 
+        // Word Guessing Game
         function startWordGame() {
-            const words = ["apple",
+            const words = ["apple", "banana", "cherry", "grape"];
+            let randomWord = words[Math.floor(Math.random() * words.length)];
+            let guess = prompt("Guess the word!");
+
+            if (guess.toLowerCase() === randomWord) {
+                alert("You guessed correctly!");
+            } else {
+                alert("Wrong! Try again.");
+            }
+        }
+
+        // Memory Game Placeholder
+        function startMemoryGame() {
+            alert("Memory Game Coming Soon!");
+            // Memory game logic can be added here in the future
+        }
+    </script>
+</body>
+</html>
