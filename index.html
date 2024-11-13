@@ -51,6 +51,19 @@
             margin: 10px;
             cursor: pointer;
         }
+
+        /* Exit button styling */
+        #exitButton {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -64,11 +77,19 @@
         <button onclick="startMathQuiz()">Start Math Quiz</button>
         <button onclick="startWordGame()">Start Word Guessing Game</button>
         <button onclick="startMemoryGame()">Start Memory Game</button>
+
+        <!-- Exit button for Math Quiz -->
+        <button id="exitButton" onclick="exitGame()">Exit Game</button>
     </main>
 
     <script>
-        // Math Quiz Game with Grade Selection and Timer
+        let exitQuiz = false;
+
+        // Math Quiz Game with Grade Selection, Timer, and Exit Button
         function startMathQuiz() {
+            exitQuiz = false;
+            document.getElementById("exitButton").style.display = "block"; // Show Exit button
+
             const grade = prompt("Choose your grade (1-12):");
             const timeLimit = prompt("Choose a time limit (1, 2, or 3 minutes):") * 60 * 1000;
             const questions = generateMathQuestions(grade);
@@ -76,15 +97,15 @@
             const startTime = new Date().getTime();
 
             for (let i = 0; i < 10; i++) {
-                if (new Date().getTime() - startTime > timeLimit) {
-                    alert("Time's up!");
+                if (new Date().getTime() - startTime > timeLimit || exitQuiz) {
+                    alert("Quiz ended.");
                     break;
                 }
 
                 const question = questions[i];
-                const userAnswer = parseInt(prompt(question.text));
+                const userAnswer = prompt(question.text);
 
-                if (userAnswer === question.answer) {
+                if (parseInt(userAnswer) === question.answer) {
                     score++;
                     alert("Correct!");
                 } else {
@@ -93,6 +114,7 @@
             }
 
             alert(`You answered ${score} out of 10 questions correctly!`);
+            document.getElementById("exitButton").style.display = "none"; // Hide Exit button
         }
 
         function generateMathQuestions(grade) {
@@ -104,6 +126,13 @@
                 questions.push({ text: `What is ${num1} + ${num2}?`, answer });
             }
             return questions;
+        }
+
+        // Function to exit the game
+        function exitGame() {
+            exitQuiz = true;
+            alert("Exiting the quiz.");
+            document.getElementById("exitButton").style.display = "none"; // Hide Exit button
         }
 
         // Word Guessing Game
@@ -122,7 +151,6 @@
         // Memory Game Placeholder
         function startMemoryGame() {
             alert("Memory Game Coming Soon!");
-            // Memory game logic can be added here in the future
         }
     </script>
 </body>
