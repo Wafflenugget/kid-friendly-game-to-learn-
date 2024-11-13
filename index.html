@@ -101,9 +101,8 @@
     <main>
         <p>Enjoy the educational games we’ve created!</p>
 
+        <button onclick="startNumberGuessingGame()">Start Number Guessing Game (1-100)</button>
         <button onclick="startMemoryGame()">Start Memory Game</button>
-        <button onclick="startMathQuiz()">Start Math Quiz</button>
-        <button onclick="startTriviaGame()">Start Trivia Quiz Game</button>
 
         <!-- Exit button for all games -->
         <button id="exitButton" onclick="exitGame()">Exit Game</button>
@@ -115,64 +114,28 @@
         let exitGameFlag = false;
         let gameInProgress = false;
 
-        // Math Quiz Game
-        function startMathQuiz() {
+        // Number Guessing Game (1-100)
+        function startNumberGuessingGame() {
             if (gameInProgress) return;
             gameInProgress = true;
             document.getElementById("exitButton").style.display = "block"; // Show Exit button
 
-            let num1 = Math.floor(Math.random() * 10);
-            let num2 = Math.floor(Math.random() * 10);
-            let answer = num1 + num2;
-            let userAnswer = prompt(`What is ${num1} + ${num2}?`);
+            let randomNumber = Math.floor(Math.random() * 100) + 1;
+            let attempts = 0;
 
-            if (parseInt(userAnswer) === answer) {
-                alert("Correct!");
-            } else {
-                alert("Oops! Try again.");
-            }
-
-            gameInProgress = false;
-        }
-
-        // Trivia Quiz Game (with 10 questions)
-        function startTriviaGame() {
-            if (gameInProgress) return;
-            gameInProgress = true;
-            document.getElementById("exitButton").style.display = "block"; // Show Exit button
-
-            const triviaQuestions = [
-                { question: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], answer: "Paris" },
-                { question: "Who wrote 'Romeo and Juliet'?", options: ["Shakespeare", "Dickens", "Austen", "Twain"], answer: "Shakespeare" },
-                { question: "What is the largest planet in our solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], answer: "Jupiter" },
-                { question: "What is the square root of 64?", options: ["6", "7", "8", "9"], answer: "8" },
-                { question: "Which ocean is the largest?", options: ["Atlantic", "Indian", "Arctic", "Pacific"], answer: "Pacific" },
-                { question: "Who painted the Mona Lisa?", options: ["Van Gogh", "Picasso", "Da Vinci", "Dali"], answer: "Da Vinci" },
-                { question: "What is 3 + 5?", options: ["5", "7", "8", "10"], answer: "8" },
-                { question: "What is the capital of Japan?", options: ["Seoul", "Tokyo", "Beijing", "Bangkok"], answer: "Tokyo" },
-                { question: "Which element is known as the chemical symbol O?", options: ["Oxygen", "Osmium", "Ozone", "Oganesson"], answer: "Oxygen" },
-                { question: "What is the currency of the UK?", options: ["Dollar", "Euro", "Pound", "Yen"], answer: "Pound" }
-            ];
-
-            let score = 0;
-            let questionCount = 0;
-
-            while (questionCount < 10 && !exitGameFlag) {
-                const currentQuestion = triviaQuestions[questionCount];
-                let userAnswer = prompt(`${currentQuestion.question}\nOptions: ${currentQuestion.options.join(", ")}`);
-
-                if (userAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
-                    alert("Correct!");
-                    score++;
+            while (true) {
+                let userGuess = prompt("Guess a number between 1 and 100:");
+                attempts++;
+                if (userGuess == randomNumber) {
+                    alert(`Correct! You guessed the number in ${attempts} attempts.`);
+                    break;
+                } else if (userGuess < randomNumber) {
+                    alert("Too low! Try again.");
                 } else {
-                    alert("Oops! Try again.");
+                    alert("Too high! Try again.");
                 }
-                questionCount++;
             }
 
-            if (!exitGameFlag) {
-                alert(`You scored ${score} out of 10!`);
-            }
             gameInProgress = false;
         }
 
@@ -236,4 +199,21 @@
                     setTimeout(() => {
                         flippedCards.forEach(card => {
                             card.classList.remove('flipped');
-                            card
+                            card.textContent = '';
+                        });
+                        flippedCards = [];
+                    }, 1000);
+                }
+            }
+
+        }
+
+        // Exit game function
+        function exitGame() {
+            exitGameFlag = true;
+            alert("Exiting the game.");
+            document.getElementById("exitButton").style.display = "none"; // Hide Exit button
+        }
+    </script>
+</body>
+</html>
