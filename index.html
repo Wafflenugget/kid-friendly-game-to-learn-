@@ -3,155 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educational Game Website</title>
+    <title>Educational Games</title>
     <style>
-        /* CSS for Background and Page Styling */
         body {
-            margin: 0;
-            padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGFwcHklMjBraWRzJTIwbGVhcm5pbmd8ZW58MHx8MHx8fDA%3D');
+            font-family: Arial, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGFwcHklMjBraWRzJTIwbGVhcm5pbmd8ZW58MHx8MHx8fDA%3D'); /* Background image URL */
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
             color: white;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
-        }
-
-        header {
-            text-align: center;
-            padding-top: 100px;
-        }
-
-        h1 {
-            font-size: 3em;
             margin: 0;
+            padding: 0;
         }
-
-        main {
+        h1 {
             text-align: center;
-            font-size: 1.5em;
+            padding-top: 20px;
+        }
+        .container {
+            margin: 20px;
+        }
+        .input-container, .quiz-container, .memory-game-container {
             margin-top: 20px;
+            text-align: center;
         }
-
-        button {
-            font-size: 1.2em;
+        .card { width: 100px; height: 100px; background-color: lightblue; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; margin: 10px; }
+        .flipped { background-color: white; }
+        .quiz-container { margin-top: 30px; }
+        .question { margin-bottom: 10px; }
+        .board { display: grid; grid-template-columns: repeat(4, 100px); gap: 10px; }
+        .result { margin-top: 10px; }
+        .exit-btn {
+            margin-top: 20px;
             padding: 10px 20px;
-            margin: 10px;
-            cursor: pointer;
-        }
-
-        /* Exit button styling */
-        #exitButton {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: red;
+            background-color: #ff4d4d;
             color: white;
-            font-size: 1em;
+            border: none;
             cursor: pointer;
+        }
+        .exit-btn:hover {
+            background-color: #ff1a1a;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Fun Learning!</h1>
-    </header>
-    <main>
-        <p>Enjoy the educational games we’ve created!</p>
+    <h1>Educational Games</h1>
 
-        <!-- Buttons to start games -->
-        <button onclick="startMathQuiz()">Start Math Quiz</button>
-        <button onclick="startWordGame()">Start Word Guessing Game</button>
-        <button onclick="startMemoryGame()">Start Memory Game</button>
+    <!-- Number Guessing Game -->
+    <div class="container">
+        <h2>Number Guessing Game</h2>
+        <p>Guess a number between 1 and 100</p>
+        <div class="input-container">
+            <input type="number" id="guess" placeholder="Enter your guess">
+            <button onclick="checkGuess()">Guess</button>
+        </div>
+        <div class="result" id="result"></div>
+        <button class="exit-btn" onclick="exitGame()">Exit Game</button>
+    </div>
 
-        <!-- Exit button for Math Quiz -->
-        <button id="exitButton" onclick="exitGame()">Exit Game</button>
-    </main>
+    <!-- Memory Game -->
+    <div class="container memory-game-container">
+        <h2>Memory Game</h2>
+        <button onclick="startGame()">Start Memory Game</button>
+        <div class="board" id="board"></div>
+        <button class="exit-btn" onclick="exitGame()">Exit Game</button>
+    </div>
+
+    <!-- Math Quiz -->
+    <div class="container quiz-container">
+        <h2>Math Quiz</h2>
+        <label for="grade">Choose your grade: </label>
+        <select id="grade">
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="4">Grade 4</option>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+        </select>
+        <br><br>
+        <label for="numQuestions">How many questions: </label>
+        <input type="number" id="numQuestions" min="1" max="10" value="5">
+        <br><br>
+        <label for="timeLimit">Time Limit (minutes): </label>
+        <input type="number" id="timeLimit" min="1" max="3" value="1">
+        <br><br>
+        <button onclick="startQuiz()">Start Quiz</button>
+        <div id="quizContainer"></div>
+        <div id="timer"></div>
+        <div id="score"></div>
+        <button class="exit-btn" onclick="exitGame()">Exit Game</button>
+    </div>
 
     <script>
-        let exitQuiz = false;
-
-        // Math Quiz Game with Grade Selection, Timer, and Exit Button
-        function startMathQuiz() {
-            exitQuiz = false;
-            document.getElementById("exitButton").style.display = "block"; // Show Exit button
-
-            const grade = prompt("Choose your grade (1-12):");
-            const timeLimit = prompt("Choose a time limit (1, 2, or 3 minutes):") * 60 * 1000;
-            const questions = generateMathQuestions(grade);
-            let score = 0;
-            const startTime = new Date().getTime();
-
-            for (let i = 0; i < 10; i++) {
-                if (new Date().getTime() - startTime > timeLimit || exitQuiz) {
-                    alert("Quiz ended.");
-                    break;
-                }
-
-                const question = questions[i];
-                const userAnswer = prompt(question.text);
-
-                if (parseInt(userAnswer) === question.answer) {
-                    score++;
-                    alert("Correct!");
-                } else {
-                    alert(`Oops! The correct answer was ${question.answer}.`);
-                }
+        // Number Guessing Game
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+        function checkGuess() {
+            const guess = parseInt(document.getElementById('guess').value);
+            attempts++;
+            if (guess === randomNumber) {
+                document.getElementById('result').innerHTML = `Correct! It took you ${attempts} attempts.`;
+            } else if (guess < randomNumber) {
+                document.getElementById('result').innerHTML = 'Too low! Try again.';
+            } else {
+                document.getElementById('result').innerHTML = 'Too high! Try again.';
             }
-
-            alert(`You answered ${score} out of 10 questions correctly!`);
-            document.getElementById("exitButton").style.display = "none"; // Hide Exit button
         }
 
-        function generateMathQuestions(grade) {
+        // Memory Game
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function generateCards() {
+            const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
+            const gameCards = [...numbers, ...numbers];
+            gameCards.sort(() => Math.random() - 0.5);
+            return gameCards;
+        }
+
+        function createCard(value) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.value = value;
+            card.addEventListener('click', flipCard);
+            return card;
+        }
+
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+                this.classList.add('flipped');
+                this.textContent = this.dataset.value;
+                flippedCards.push(this);
+                if (flippedCards.length === 2) {
+                    checkMatch();
+                }
+            }
+        }
+
+        function checkMatch() {
+            if (flippedCards[0].dataset.value === flippedCards[1].dataset.value) {
+                matchedPairs++;
+                flippedCards = [];
+                if (matchedPairs === 8) {
+                    alert('You win!');
+                }
+            } else {
+                setTimeout(() => {
+                    flippedCards.forEach(card => {
+                        card.classList.remove('flipped');
+                        card.textContent = '';
+                    });
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        function startGame() {
+            cards = generateCards();
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            cards.forEach(value => {
+                board.appendChild(createCard(value));
+            });
+        }
+
+        // Math Quiz
+        let questions = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let timer;
+        let timeLeft;
+
+        function startQuiz() {
+            const grade = document.getElementById('grade').value;
+            const numQuestions = document.getElementById('numQuestions').value;
+            const timeLimit = document.getElementById('timeLimit').value;
+
+            questions = generateMathQuestions(grade, numQuestions);
+            timeLeft = timeLimit * 60;
+
+            // Set timer
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert(`Time's up! Your score is: ${score}`);
+                } else {
+                    timeLeft--;
+                    document.getElementById('timer').innerHTML = `Time left: ${timeLeft}s`;
+                }
+            }, 1000);
+
+            displayQuestion();
+        }
+
+        function generateMathQuestions(grade, numQuestions) {
             const questions = [];
-            for (let i = 0; i < 10; i++) {
-                const num1 = Math.floor(Math.random() * (10 * grade));
-                const num2 = Math.floor(Math.random() * (10 * grade));
-                const answer = num1 + num2;
-                questions.push({ text: `What is ${num1} + ${num2}?`, answer });
+            const maxNum = parseInt(grade) + 10; // Max number depends on the grade
+
+            for (let i = 0; i < numQuestions; i++) {
+                const num1 = Math.floor(Math.random() * maxNum) + 1;
+                const num2 = Math.floor(Math.random() * maxNum) + 1;
+                questions.push({
+                    question: `${num1} + ${num2}`,
+                    answer: num1 + num2
+                });
             }
             return questions;
         }
 
-        // Function to exit the game
-        function exitGame() {
-            exitQuiz = true;
-            alert("Exiting the quiz.");
-            document.getElementById("exitButton").style.display = "none"; // Hide Exit button
-        }
-
-        // Word Guessing Game
-        function startWordGame() {
-            const words = ["apple", "banana", "cherry", "grape"];
-            let randomWord = words[Math.floor(Math.random() * words.length)];
-            let guess = prompt("Guess the word!");
-
-            if (guess.toLowerCase() === randomWord) {
-                alert("You guessed correctly!");
-            } else {
-                alert("Wrong! Try again.");
-            }
-        }
-
-        // Memory Game Placeholder
-        function startMemoryGame() {
-            alert("Memory Game Coming Soon!");
-        }
-    </script>
-</body>
-</html>
+        function displayQuestion() {
+            if (currentQuestion < questions.length) {
+                const q = questions[currentQuestion];
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `${q.question} <input type="number" id="answer">`;
+                const nextButton = document.createElement('button');
