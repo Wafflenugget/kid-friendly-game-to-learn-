@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Games</title>
-    
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,10 +14,13 @@
             background-size: cover;
             background-position: center;
             color: white;
+            overflow: hidden; /* Prevent scrolling when game container is visible */
         }
         .container {
             text-align: center;
             padding: 20px;
+            position: relative; /* Prevent other elements from overlapping */
+            z-index: 2;
         }
         .exit-btn, .start-btn {
             margin-top: 20px;
@@ -26,6 +29,7 @@
             color: white;
             border: none;
             cursor: pointer;
+            z-index: 3;
         }
         .exit-btn:hover, .start-btn:hover {
             background-color: #ff1a1a;
@@ -39,15 +43,34 @@
             margin: 50px auto;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             color: black;
+            z-index: 1; /* Ensure it is on top */
+            position: relative;
         }
-        .game {
-            display: none;
-        }
-        #quiz-container {
+        #quiz-container, #memory-game, #number-guessing-game {
             text-align: left;
         }
-        .question {
-            margin-bottom: 10px;
+        .card {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            background-color: #ddd;
+            margin: 10px;
+            text-align: center;
+            font-size: 24px;
+            line-height: 100px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .flipped {
+            background-color: #fff;
+            color: black;
+        }
+
+        /* Ensuring the ads display correctly */
+        .adsense-ad {
+            margin: 20px 0;
+            display: block;
+            width: 100%;
         }
     </style>
 </head>
@@ -64,30 +87,50 @@
         <button class="exit-btn" onclick="exitGame()">Exit Game</button>
 
         <!-- Math Quiz Game -->
-        <div id="quiz-container" class="game"></div>
+        <div id="quiz-container"></div>
 
         <!-- Memory Game -->
-        <div id="memory-game" class="game">
+        <div id="memory-game" style="display:none;">
             <h2>Memory Game (Animal Pairs)</h2>
             <div id="memory-board"></div>
         </div>
 
         <!-- Number Guessing Game -->
-        <div id="number-guessing-game" class="game">
+        <div id="number-guessing-game" style="display:none;">
             <h2>Number Guessing Game (1-50)</h2>
             <p>Guess the number between 1 and 50!</p>
             <input type="number" id="guess" placeholder="Enter your guess" min="1" max="50">
             <button onclick="checkNumberGuess()">Submit Guess</button>
             <p id="guess-feedback"></p>
         </div>
+
+        <!-- Google AdSense Ad Unit -->
+        <div class="adsense-ad">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2460295841068549"
+                    crossorigin="anonymous"></script>
+            <!-- Learning daily -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-2460295841068549"
+                 data-ad-slot="8645107975"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
     </div>
 
     <script>
         // Function to select Math Quiz
         function selectMathQuiz() {
-            showGame('quiz-container');
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+
+            // Ask for grade and time
             const grade = prompt("Enter grade (1-12):");
             const timeLimit = prompt("How many minutes would you like to play? (1-5)");
+
             startMathQuiz(grade, timeLimit);
         }
 
@@ -95,67 +138,20 @@
         function startMathQuiz(grade, timeLimit) {
             const quizContainer = document.getElementById('quiz-container');
             quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade} - Time: ${timeLimit} minutes</h3>`;
-
-            let questions = '';
-            for (let i = 0; i < 15; i++) {
-                const question = generateMathQuestion(grade);
-                questions += `<div class="question">${question}</div>`;
-            }
-
-            quizContainer.innerHTML += questions;
-            quizContainer.innerHTML += `<button onclick="submitQuiz()">Submit Quiz</button>`;
-        }
-
-        // Function to generate math question based on grade
-        function generateMathQuestion(grade) {
-            let question = '';
-            const num1 = Math.floor(Math.random() * 10) + 1;
-            const num2 = Math.floor(Math.random() * 10) + 1;
-
-            if (grade >= 1 && grade <= 3) {
-                question = `${num1} + ${num2} = ?`;
-            } else if (grade >= 4 && grade <= 6) {
-                const operator = Math.random() < 0.5 ? '+' : (Math.random() < 0.5 ? '-' : '*');
-                if (operator === '+') {
-                    question = `${num1} + ${num2} = ?`;
-                } else if (operator === '-') {
-                    question = `${num1} - ${num2} = ?`;
-                } else {
-                    question = `${num1} * ${num2} = ?`;
-                }
-            } else if (grade >= 7 && grade <= 9) {
-                const operator = Math.random() < 0.5 ? '*' : '/';
-                if (operator === '*') {
-                    question = `${num1} * ${num2} = ?`;
-                } else {
-                    question = `${num1 * num2} / ${num2} = ?`;
-                }
-            } else {
-                const operator = Math.random() < 0.5 ? '*' : '/';
-                if (operator === '*') {
-                    question = `Solve for x: x * ${num1} = ${num1 * num2}`;
-                } else {
-                    question = `Solve for x: ${num1 * num2} / x = ${num1}`;
-                }
-            }
-
-            return question;
-        }
-
-        // Submit Quiz Function (Currently not implemented for grading)
-        function submitQuiz() {
-            alert('Quiz submitted! You can now implement the grading logic.');
+            // Here you can generate questions based on grade and time
         }
 
         // Start Memory Game
         function startMemoryGame() {
-            showGame('memory-game');
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
             const memoryBoard = document.getElementById('memory-board');
 
             const animals = ['Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe', 'Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe'];
             const shuffledAnimals = shuffle(animals);
 
             memoryBoard.innerHTML = '';
+
             shuffledAnimals.forEach(animal => {
                 const card = document.createElement('div');
                 card.classList.add('card');
@@ -163,33 +159,7 @@
                 memoryBoard.appendChild(card);
             });
 
-            let flippedCards = [];
-            const cards = document.querySelectorAll('.card');
-
-            cards.forEach(card => {
-                card.addEventListener('click', () => {
-                    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                        card.classList.add('flipped');
-                        flippedCards.push(card);
-
-                        if (flippedCards.length === 2) {
-                            checkForMatch(flippedCards);
-                        }
-                    }
-                });
-            });
-
-            function checkForMatch(cards) {
-                if (cards[0].textContent === cards[1].textContent) {
-                    flippedCards = [];
-                } else {
-                    setTimeout(() => {
-                        cards[0].classList.remove('flipped');
-                        cards[1].classList.remove('flipped');
-                        flippedCards = [];
-                    }, 1000);
-                }
-            }
+            // Add card flip logic and game mechanics here
         }
 
         // Shuffle function for Memory Game
@@ -203,7 +173,9 @@
 
         // Start Number Guessing Game
         function startNumberGuessingGame() {
-            showGame('number-guessing-game');
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('number-guessing-game').style.display = 'block';
         }
 
         // Check Number Guessing Game
@@ -223,9 +195,7 @@
         function exitGame() {
             document.getElementById('start-screen').style.display = 'block';
             document.getElementById('game-container').style.display = 'none';
-            const games = document.querySelectorAll('.game');
-            games.forEach(game => game.style.display = 'none');
         }
-
-        // Show selected game
-       
+    </script>
+</body>
+</html>
