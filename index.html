@@ -51,47 +51,6 @@
             margin: 10px;
             cursor: pointer;
         }
-
-        #exitButton {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: red;
-            color: white;
-            font-size: 1em;
-            cursor: pointer;
-        }
-
-        /* Memory Game CSS */
-        .game-board {
-            display: grid;
-            grid-template-columns: repeat(4, 100px);
-            gap: 10px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .card {
-            width: 100px;
-            height: 100px;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 24px;
-            border-radius: 10px;
-        }
-
-        .card.flipped {
-            background-color: #ffffff;
-        }
-
-        .card.matched {
-            background-color: #77dd77;
-        }
     </style>
 </head>
 <body>
@@ -101,119 +60,50 @@
     <main>
         <p>Enjoy the educational games we’ve created!</p>
 
-        <button onclick="startNumberGuessingGame()">Start Number Guessing Game (1-100)</button>
+        <!-- Buttons to start games -->
+        <button onclick="startMathQuiz()">Start Math Quiz</button>
+        <button onclick="startWordGame()">Start Word Guessing Game</button>
         <button onclick="startMemoryGame()">Start Memory Game</button>
-
-        <!-- Exit button for all games -->
-        <button id="exitButton" onclick="exitGame()">Exit Game</button>
     </main>
 
-    <div id="memoryGameBoard" class="game-board"></div>
-
     <script>
-        let exitGameFlag = false;
-        let gameInProgress = false;
+        function startMathQuiz() {
+            const grade = prompt("Choose your grade (1-12):");
+            const questions = generateMathQuestions(grade);
+            let score = 0;
+            const startTime = new Date().getTime();
+            const timeLimit = 2 * 60 * 1000; // 2 minutes
 
-        // Number Guessing Game (1-100)
-        function startNumberGuessingGame() {
-            if (gameInProgress) return;
-            gameInProgress = true;
-            document.getElementById("exitButton").style.display = "block"; // Show Exit button
-
-            let randomNumber = Math.floor(Math.random() * 100) + 1;
-            let attempts = 0;
-
-            while (true) {
-                let userGuess = prompt("Guess a number between 1 and 100:");
-                attempts++;
-                if (userGuess == randomNumber) {
-                    alert(`Correct! You guessed the number in ${attempts} attempts.`);
+            for (let i = 0; i < 10; i++) {
+                if (new Date().getTime() - startTime > timeLimit) {
+                    alert("Time's up!");
                     break;
-                } else if (userGuess < randomNumber) {
-                    alert("Too low! Try again.");
+                }
+
+                const question = questions[i];
+                const userAnswer = parseInt(prompt(question.text));
+
+                if (userAnswer === question.answer) {
+                    score++;
+                    alert("Correct!");
                 } else {
-                    alert("Too high! Try again.");
+                    alert(`Oops! The correct answer was ${question.answer}.`);
                 }
             }
 
-            gameInProgress = false;
+            alert(`You answered ${score} out of 10 questions correctly!`);
         }
 
-        // Memory Game
-        function startMemoryGame() {
-            if (gameInProgress) return;
-            gameInProgress = true;
-            exitGameFlag = false;
-            document.getElementById("exitButton").style.display = "block"; // Show Exit button
-
-            const cardValues = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']; // 8 pairs
-            let shuffledCards = shuffleArray(cardValues);
-
-            const board = document.getElementById("memoryGameBoard");
-            board.innerHTML = ''; // Clear the board
-
-            shuffledCards.forEach(value => {
-                const cardElement = document.createElement('div');
-                cardElement.classList.add('card');
-                cardElement.setAttribute('data-value', value);
-                cardElement.addEventListener('click', flipCard);
-                board.appendChild(cardElement);
-            });
-
-            // Game variables
-            let flippedCards = [];
-            let matchedCards = 0;
-            let moves = 0;
-
-            // Function to shuffle the cards array
-            function shuffleArray(array) {
-                return array.sort(() => Math.random() - 0.5);
+        function generateMathQuestions(grade) {
+            const questions = [];
+            for (let i = 0; i < 10; i++) {
+                const num1 = Math.floor(Math.random() * 10 * grade);
+                const num2 = Math.floor(Math.random() * 10 * grade);
+                const answer = num1 + num2;
+                questions.push({ text: `What is ${num1} + ${num2}?`, answer });
             }
-
-            // Function to handle card flipping
-            function flipCard(event) {
-                if (flippedCards.length < 2 && !event.target.classList.contains('flipped') && !exitGameFlag) {
-                    event.target.classList.add('flipped');
-                    event.target.textContent = event.target.getAttribute('data-value');
-                    flippedCards.push(event.target);
-
-                    if (flippedCards.length === 2) {
-                        moves++;
-                        checkForMatch();
-                    }
-                }
-            }
-
-            // Function to check if two flipped cards match
-            function checkForMatch() {
-                if (flippedCards[0].getAttribute('data-value') === flippedCards[1].getAttribute('data-value')) {
-                    flippedCards.forEach(card => card.classList.add('matched'));
-                    matchedCards += 2;
-                    flippedCards = [];
-
-                    if (matchedCards === shuffledCards.length) {
-                        alert(`Congratulations! You won in ${moves} moves!`);
-                        document.getElementById("exitButton").style.display = "none"; // Hide Exit button
-                    }
-                } else {
-                    setTimeout(() => {
-                        flippedCards.forEach(card => {
-                            card.classList.remove('flipped');
-                            card.textContent = '';
-                        });
-                        flippedCards = [];
-                    }, 1000);
-                }
-            }
-
+            return questions;
         }
 
-        // Exit game function
-        function exitGame() {
-            exitGameFlag = true;
-            alert("Exiting the game.");
-            document.getElementById("exitButton").style.display = "none"; // Hide Exit button
-        }
-    </script>
-</body>
-</html>
+        function startWordGame() {
+            const words = ["apple",
