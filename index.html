@@ -40,6 +40,9 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             color: black;
         }
+        .game {
+            display: none;
+        }
         #quiz-container {
             text-align: left;
         }
@@ -61,16 +64,16 @@
         <button class="exit-btn" onclick="exitGame()">Exit Game</button>
 
         <!-- Math Quiz Game -->
-        <div id="quiz-container"></div>
+        <div id="quiz-container" class="game"></div>
 
         <!-- Memory Game -->
-        <div id="memory-game" style="display:none;">
+        <div id="memory-game" class="game">
             <h2>Memory Game (Animal Pairs)</h2>
             <div id="memory-board"></div>
         </div>
 
         <!-- Number Guessing Game -->
-        <div id="number-guessing-game" style="display:none;">
+        <div id="number-guessing-game" class="game">
             <h2>Number Guessing Game (1-50)</h2>
             <p>Guess the number between 1 and 50!</p>
             <input type="number" id="guess" placeholder="Enter your guess" min="1" max="50">
@@ -82,13 +85,9 @@
     <script>
         // Function to select Math Quiz
         function selectMathQuiz() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
-
-            // Ask for grade
+            showGame('quiz-container');
             const grade = prompt("Enter grade (1-12):");
             const timeLimit = prompt("How many minutes would you like to play? (1-5)");
-
             startMathQuiz(grade, timeLimit);
         }
 
@@ -97,7 +96,6 @@
             const quizContainer = document.getElementById('quiz-container');
             quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade} - Time: ${timeLimit} minutes</h3>`;
 
-            // Generate 15 math questions based on grade
             let questions = '';
             for (let i = 0; i < 15; i++) {
                 const question = generateMathQuestion(grade);
@@ -105,8 +103,6 @@
             }
 
             quizContainer.innerHTML += questions;
-
-            // Create submit button (you can expand this to handle answers later)
             quizContainer.innerHTML += `<button onclick="submitQuiz()">Submit Quiz</button>`;
         }
 
@@ -117,10 +113,8 @@
             const num2 = Math.floor(Math.random() * 10) + 1;
 
             if (grade >= 1 && grade <= 3) {
-                // Simple addition for grades 1-3
                 question = `${num1} + ${num2} = ?`;
             } else if (grade >= 4 && grade <= 6) {
-                // Addition, subtraction, and simple multiplication
                 const operator = Math.random() < 0.5 ? '+' : (Math.random() < 0.5 ? '-' : '*');
                 if (operator === '+') {
                     question = `${num1} + ${num2} = ?`;
@@ -130,7 +124,6 @@
                     question = `${num1} * ${num2} = ?`;
                 }
             } else if (grade >= 7 && grade <= 9) {
-                // Multiplication, division, and simple algebra
                 const operator = Math.random() < 0.5 ? '*' : '/';
                 if (operator === '*') {
                     question = `${num1} * ${num2} = ?`;
@@ -138,7 +131,6 @@
                     question = `${num1 * num2} / ${num2} = ?`;
                 }
             } else {
-                // Algebra and advanced problems for grades 10-12
                 const operator = Math.random() < 0.5 ? '*' : '/';
                 if (operator === '*') {
                     question = `Solve for x: x * ${num1} = ${num1 * num2}`;
@@ -157,15 +149,13 @@
 
         // Start Memory Game
         function startMemoryGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
+            showGame('memory-game');
             const memoryBoard = document.getElementById('memory-board');
 
             const animals = ['Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe', 'Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe'];
             const shuffledAnimals = shuffle(animals);
 
             memoryBoard.innerHTML = '';
-
             shuffledAnimals.forEach(animal => {
                 const card = document.createElement('div');
                 card.classList.add('card');
@@ -205,4 +195,37 @@
         // Shuffle function for Memory Game
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
-             
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Start Number Guessing Game
+        function startNumberGuessingGame() {
+            showGame('number-guessing-game');
+        }
+
+        // Check Number Guessing Game
+        function checkNumberGuess() {
+            const guess = document.getElementById('guess').value;
+            const numberToGuess = Math.floor(Math.random() * 50) + 1;
+            const feedback = document.getElementById('guess-feedback');
+
+            if (parseInt(guess) === numberToGuess) {
+                feedback.textContent = 'You guessed it right!';
+            } else {
+                feedback.textContent = 'Try again!';
+            }
+        }
+
+        // Exit Game Function
+        function exitGame() {
+            document.getElementById('start-screen').style.display = 'block';
+            document.getElementById('game-container').style.display = 'none';
+            const games = document.querySelectorAll('.game');
+            games.forEach(game => game.style.display = 'none');
+        }
+
+        // Show selected game
+       
