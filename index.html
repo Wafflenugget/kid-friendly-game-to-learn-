@@ -109,47 +109,52 @@
 
 
 
-        // Function to select Math Quiz
-        function selectMathQuiz() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
+    function startMemoryGame() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('game-container').style.display = 'block';
+    document.getElementById('memory-game').style.display = 'block';
 
-            // Ask for grade and time
-            const grade = prompt("Enter grade (1-12):");
-            const timeLimit = prompt("How many minutes would you like to play? (1-5)");
+    const memoryBoard = document.getElementById('memory-board');
+    memoryBoard.innerHTML = ''; // Clear any existing cards
 
-            startMathQuiz(grade, timeLimit);
-        }
+    const fruits = ['🍎', '🍌', '🍓', '🍉', '🍊', '🍍', '🍎', '🍌', '🍓', '🍉'];
+    const shuffledFruits = shuffle(fruits);
 
-        // Math Quiz
-        function startMathQuiz(grade, timeLimit) {
-            const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade} - Time: ${timeLimit} minutes</h3>`;
+    shuffledFruits.forEach(fruit => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.textContent = fruit;
+        memoryBoard.appendChild(card);
+    });
 
-            let questions = '';
-            for (let i = 0; i < 10; i++) {
-                questions += `<p>Question ${i + 1}: ${Math.floor(Math.random() * 10)} + ${Math.floor(Math.random() * 10)} = ?</p>`;
+    let flippedCards = [];
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                card.classList.add('flipped');
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    checkForMatch(flippedCards);
+                }
             }
-            quizContainer.innerHTML += questions;
+        });
+    });
+
+    function checkForMatch(cards) {
+        if (cards[0].textContent === cards[1].textContent) {
+            flippedCards = [];
+        } else {
+            setTimeout(() => {
+                cards[0].classList.remove('flipped');
+                cards[1].classList.remove('flipped');
+                flippedCards = [];
+            }, 1000);
         }
-
-        // Start Memory Game
-        function startMemoryGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
-            const memoryBoard = document.getElementById('memory-board');
-
-            const fruits = ['🍎', '🍌', '🍓', '🍉', '🍊', '🍍', '🍎', '🍌', '🍓', '🍉'];
-            const shuffledFruits = shuffle(fruits);
-
-            memoryBoard.innerHTML = '';
-
-            shuffledFruits.forEach(fruit => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-                card.textContent = fruit;
-                memoryBoard.appendChild(card);
-            });
+    }
+}
 
             let flippedCards = [];
             const cards = document.querySelectorAll('.card');
@@ -217,5 +222,5 @@
             document.getElementById('number-guessing-game').style.display = 'none';
         }
     </script>
-</body> <!-- Close Body Section -->
-</html> <!-- Close HTML Document -->
+</body> 
+</html>
