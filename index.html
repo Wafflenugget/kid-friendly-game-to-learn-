@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Games</title>
     <style>
-        /* CSS styles for layout and game cards */
+        /* Add your CSS styles here */
+        .start-btn, .exit-btn {
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -39,6 +45,7 @@
         let questionIndex = 0;
         let score = 0;
         let randomNumber = Math.floor(Math.random() * 100) + 1; // Persistent random number for guessing game
+        let questions = []; // Make questions global for quiz accessibility
         
         function resetGame() {
             questionIndex = 0;
@@ -62,17 +69,17 @@
         function startMathQuiz(grade) {
             const quizContainer = document.getElementById('quiz-container');
             quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade}</h3>`;
-            const questions = generateMathQuestions(grade);
-            displayQuestion(questions);
+            questions = generateMathQuestions(grade);
+            displayQuestion();
         }
 
-        function displayQuestion(questions) {
+        function displayQuestion() {
             const quizContainer = document.getElementById('quiz-container');
             if (questionIndex < questions.length) {
                 quizContainer.innerHTML = `
                     <h3>Question ${questionIndex + 1}: ${questions[questionIndex].question}</h3>
                     <input type="number" id="answer" placeholder="Your answer">
-                    <button onclick="submitAnswer(${JSON.stringify(questions)})">Submit Answer</button>
+                    <button onclick="submitAnswer()">Submit Answer</button>
                     <p id="quiz-feedback"></p>
                 `;
             } else {
@@ -80,10 +87,17 @@
             }
         }
 
-        function submitAnswer(questions) {
+        function submitAnswer() {
             const answerInput = document.getElementById('answer');
             const feedback = document.getElementById('quiz-feedback');
 
+            // Check if input is empty
+            if (answerInput.value === '') {
+                feedback.textContent = 'Please enter an answer!';
+                return;
+            }
+
+            // Continue with answer validation
             if (parseInt(answerInput.value) === questions[questionIndex].answer) {
                 score++;
                 feedback.textContent = 'Correct!';
@@ -92,7 +106,7 @@
             }
 
             questionIndex++;
-            setTimeout(() => displayQuestion(questions), 1000);
+            setTimeout(displayQuestion, 1000);
         }
 
         function generateMathQuestions(grade) {
