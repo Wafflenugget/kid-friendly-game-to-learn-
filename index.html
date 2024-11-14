@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Educational Games</title>
-    
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-image: url('https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGFwcHklMjBraWRzJTIwbGVhcm5pbmd8ZW58MHx8MHx8fDA%3D');
-            background-size: cover;
-            background-position: center;
+            background-color: #f0f8ff;
             color: white;
         }
         .container {
@@ -22,13 +19,13 @@
         .exit-btn, .start-btn {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #28a745; /* Green color */
+            background-color: #28a745;
             color: white;
             border: none;
             cursor: pointer;
         }
         .exit-btn:hover, .start-btn:hover {
-            background-color: #218838; /* Darker green */
+            background-color: #218838;
         }
         #game-container {
             display: none;
@@ -40,24 +37,8 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             color: black;
         }
-        #quiz-container, #memory-game, #number-guessing-game {
+        #quiz-container {
             text-align: left;
-        }
-        .card {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            background-color: #ddd;
-            margin: 10px;
-            text-align: center;
-            font-size: 24px;
-            line-height: 100px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .flipped {
-            background-color: #fff;
-            color: black;
         }
     </style>
 </head>
@@ -69,134 +50,128 @@
         <button class="start-btn" onclick="startNumberGuessingGame()">Start Number Guessing Game</button>
     </div>
 
-    <!-- Full Screen Game Container -->
     <div id="game-container">
         <button class="exit-btn" onclick="exitGame()">Exit Game</button>
-
-        <!-- Math Quiz Game -->
         <div id="quiz-container"></div>
-
-        <!-- Memory Game -->
-        <div id="memory-game" style="display:none;">
-            <h2>Memory Game (Animal Pairs)</h2>
-            <div id="memory-board"></div>
-        </div>
-
-        <!-- Number Guessing Game -->
-        <div id="number-guessing-game" style="display:none;">
-            <h2>Number Guessing Game (1-50)</h2>
-            <p>Guess the number between 1 and 50!</p>
-            <input type="number" id="guess" placeholder="Enter your guess" min="1" max="50">
-            <button onclick="checkNumberGuess()">Submit Guess</button>
-            <p id="guess-feedback"></p>
-        </div>
     </div>
 
     <script>
+        let currentQuestionIndex = 0;
+        let questions = [];
+
         // Function to select Math Quiz
         function selectMathQuiz() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-
-            // Ask for grade and time
             const grade = prompt("Enter grade (1-12):");
-            const timeLimit = prompt("How many minutes would you like to play? (1-5)");
-
-            startMathQuiz(grade, timeLimit);
+            startMathQuiz(grade);
         }
 
-        // Math Quiz
-        function startMathQuiz(grade, timeLimit) {
+        // Math Quiz Generator
+        function startMathQuiz(grade) {
+            questions = [];
+            currentQuestionIndex = 0;
             const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade} - Time: ${timeLimit} minutes</h3>`;
-            // Generate some math problems (simple example)
-            let questions = '';
-            for (let i = 0; i < 5; i++) {
-                questions += `<p>Question ${i + 1}: ${Math.floor(Math.random() * 10)} + ${Math.floor(Math.random() * 10)} = ?</p>`;
+            quizContainer.innerHTML = ''; // Clear previous content
+
+            // Create questions based on grade
+            if (grade == 4) {
+                questions = generateMathQuestions(4, false);
+            } else if (grade == 5) {
+                questions = generateMathQuestions(5, true);
+            } else if (grade > 5) {
+                questions = generateMathQuestions(grade, true, 200);
             }
-            quizContainer.innerHTML += questions;
+
+            displayNextQuestion();
+        }
+
+        // Generate Math Questions
+        function generateMathQuestions(grade, includeAlgebra, maxNumber = 100) {
+            let questions = [];
+            for (let i = 0; i < 5; i++) {
+                let num1 = Math.floor(Math.random() * maxNumber);
+                let num2 = Math.floor(Math.random() * maxNumber);
+                if (grade == 4) {
+                    // Multiplication and division for 4th grade
+                    if (i % 2 === 0) {
+                        questions.push(`${num1} x ${num2}`);
+                    } else {
+                        questions.push(`${num1 * num2} ÷ ${num1}`);
+                    }
+                } else if (grade == 5) {
+                    // More complex operations for 5th grade
+                    if (i % 2 === 0) {
+                        questions.push(`${num1} x ${num2}`);
+                    } else {
+                        questions.push(`${num1 * num2} ÷ ${num1}`);
+                    }
+                    // Adding a simple algebra question (for example x + 3 = 7)
+                    if (includeAlgebra && i % 3 === 0) {
+                        questions.push(`x + ${num1} = ${num2}`);
+                    }
+                } else {
+                    // Harder problems for grades 6+
+                    if (i % 2 === 0) {
+                        questions.push(`${num1} x ${num2}`);
+                    } else {
+                        questions.push(`${num1 * num2} ÷ ${num1}`);
+                    }
+                }
+            }
+            return questions;
+        }
+
+        // Display the next question
+        function displayNextQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = `
+                    <h3>Question ${currentQuestionIndex + 1}: ${questions[currentQuestionIndex]}</h3>
+                    <input type="text" id="answer" placeholder="Your answer">
+                    <button onclick="checkAnswer()">Submit Answer</button>
+                `;
+            } else {
+                document.getElementById('quiz-container').innerHTML = "<h3>Quiz Complete!</h3>";
+            }
+        }
+
+        // Check if the answer is correct
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value;
+            const correctAnswer = eval(questions[currentQuestionIndex].replace('x', '*').replace('÷', '/'));
+            
+            if (userAnswer == correctAnswer) {
+                alert("Correct!");
+            } else {
+                alert(`Wrong! The correct answer is ${correctAnswer}`);
+            }
+
+            currentQuestionIndex++;
+            displayNextQuestion();
         }
 
         // Start Memory Game
         function startMemoryGame() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            const memoryBoard = document.getElementById('memory-board');
-
-            const animals = ['Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe', 'Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe'];
-            const shuffledAnimals = shuffle(animals);
-
-            memoryBoard.innerHTML = '';
-
-            shuffledAnimals.forEach(animal => {
-                const card = document.createElement('div');
-                card.classList.add('card');
-                card.textContent = animal;
-                memoryBoard.appendChild(card);
-            });
-
-            let flippedCards = [];
-            const cards = document.querySelectorAll('.card');
-
-            cards.forEach(card => {
-                card.addEventListener('click', () => {
-                    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                        card.classList.add('flipped');
-                        flippedCards.push(card);
-
-                        if (flippedCards.length === 2) {
-                            checkForMatch(flippedCards);
-                        }
-                    }
-                });
-            });
-
-            function checkForMatch(cards) {
-                if (cards[0].textContent === cards[1].textContent) {
-                    flippedCards = [];
-                } else {
-                    setTimeout(() => {
-                        cards[0].classList.remove('flipped');
-                        cards[1].classList.remove('flipped');
-                        flippedCards = [];
-                    }, 1000);
-                }
-            }
-        }
-
-        // Shuffle function for Memory Game
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+            // Memory game code here
         }
 
         // Start Number Guessing Game
         function startNumberGuessingGame() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            document.getElementById('number-guessing-game').style.display = 'block';
-        }
-
-        // Check Number Guessing Game
-        function checkNumberGuess() {
-            const guess = document.getElementById('guess').value;
-            const numberToGuess = Math.floor(Math.random() * 50) + 1;
-            const feedback = document.getElementById('guess-feedback');
-
-            if (parseInt(guess) === numberToGuess) {
-                feedback.textContent = 'You guessed it right!';
-            } else {
-                feedback.textContent = 'Try again!';
-            }
+            // Number guessing game code here
         }
 
         // Exit Game Function
         function exitGame() {
             document.getElementById('start-screen').style.display = 'block';
             document.getElementById('game-container').style.display = 'none';
+            // Reset the game state
+            currentQuestionIndex = 0;
+            questions = [];
         }
     </script>
 </body>
