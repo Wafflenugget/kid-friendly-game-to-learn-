@@ -92,7 +92,18 @@
     </div> <!-- Close Game Container Section -->
 
     <script>
-        // JavaScript functions for the games
+      <button onclick="exitGame()">Exit Game</button>
+
+
+  function exitGame() {
+    // Clear game-related session or local storage data to reset game state
+    sessionStorage.clear();  // or localStorage.clear();
+
+    // Redirect to the homepage or main menu
+    window.location.href = 'index.html'; // Change this to your desired URL
+  }
+</script>
+
 
         // Function to select Math Quiz
         function selectMathQuiz() {
