@@ -90,10 +90,10 @@
             <p id="guess-feedback"></p>
         </div> <!-- Close Number Guessing Game Section -->
     </div> <!-- Close Game Container Section -->
+let numberToGuess = Math.floor(Math.random() * 50) + 1; // Set this outside the function
 
-  <script>
-    let numberToGuess = Math.floor(Math.random() * 50) + 1; // Set this outside the function
-
+<script>
+        
 function exitGame() {
     document.getElementById('quiz-container').innerHTML = ''; // Clear quiz content
     document.getElementById('start-screen').style.display = 'block';
@@ -110,7 +110,8 @@ function startMemoryGame() {
     const memoryBoard = document.getElementById('memory-board');
     memoryBoard.innerHTML = ''; // Clear any existing cards
 
-    const fruits = ['🍎', '🍌', '🍓', '🍉', '🍊', '🍍', '🍎', '🍌', '🍓', '🍉'];
+    // Updated fruits array for matching pairs
+    const fruits = ['🍎', '🍌', '🍓', '🍉', '🍍', '🍍', '🍎', '🍌', '🍓', '🍉'];
     const shuffledFruits = shuffle(fruits);
 
     shuffledFruits.forEach(fruit => {
@@ -174,6 +175,6 @@ function checkNumberGuess() {
         feedback.textContent = 'Try again!';
     }
 }
-  </script>
+</script>
 </body> 
 </html>
