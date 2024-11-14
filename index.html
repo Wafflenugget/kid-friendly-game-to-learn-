@@ -11,7 +11,6 @@
             padding: 0;
             background-image: url('https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGFwcHklMjBraWRzJTIwbGVhcm5pbmd8ZW58MHx8MHx8fDA%3D');
             background-size: cover;
-            background-size: cover;
             background-position: center;
             color: white;
         }
@@ -64,16 +63,12 @@
 <body>
     <div class="container" id="start-screen">
         <h1>Welcome to the Educational Games</h1>
-        <button class="start-btn" onclick="selectMathQuiz()">Start Math Quiz</button>
         <button class="start-btn" onclick="startMemoryGame()">Start Memory Game</button>
         <button class="start-btn" onclick="startNumberGuessingGame()">Start Number Guessing Game</button>
     </div> <!-- Close Start Screen Section -->
 
     <div id="game-container">
         <button class="exit-btn" onclick="exitGame()">Exit Game</button>
-
-        <!-- Math Quiz Game -->
-        <div id="quiz-container"></div>
 
         <!-- Memory Game -->
         <div id="memory-game" style="display:none;">
@@ -90,12 +85,11 @@
             <p id="guess-feedback"></p>
         </div> <!-- Close Number Guessing Game Section -->
     </div> <!-- Close Game Container Section -->
-let numberToGuess = Math.floor(Math.random() * 50) + 1; // Set this outside the function
 
 <script>
-        
+let numberToGuess = Math.floor(Math.random() * 50) + 1; // Set this inside the script
+
 function exitGame() {
-    document.getElementById('quiz-container').innerHTML = ''; // Clear quiz content
     document.getElementById('start-screen').style.display = 'block';
     document.getElementById('game-container').style.display = 'none';
     document.getElementById('memory-game').style.display = 'none';
@@ -176,5 +170,5 @@ function checkNumberGuess() {
     }
 }
 </script>
-</body> 
+</body>
 </html>
