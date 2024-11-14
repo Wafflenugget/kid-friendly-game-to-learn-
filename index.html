@@ -38,11 +38,15 @@
     <script>
         let questionIndex = 0;
         let score = 0;
+        let randomNumber = Math.floor(Math.random() * 100) + 1; // Persistent random number for guessing game
         
         function resetGame() {
             questionIndex = 0;
             score = 0;
+            randomNumber = Math.floor(Math.random() * 100) + 1; // Reset random number
             document.getElementById('quiz-container').innerHTML = '';
+            document.getElementById('guess-input').value = ''; // Clear guessing game input
+            document.getElementById('guess-feedback').textContent = ''; // Clear feedback
         }
 
         function selectMathQuiz() {
@@ -115,7 +119,6 @@
         function submitGuess() {
             const guessInput = document.getElementById('guess-input');
             const guessFeedback = document.getElementById('guess-feedback');
-            const randomNumber = Math.floor(Math.random() * 100) + 1;
 
             if (parseInt(guessInput.value) === randomNumber) {
                 guessFeedback.textContent = 'Correct! You guessed the number!';
@@ -128,6 +131,8 @@
             resetGame();
             document.getElementById('start-screen').style.display = 'block';
             document.getElementById('game-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('number-guessing-game').style.display = 'none';
         }
     </script>
 </body>
