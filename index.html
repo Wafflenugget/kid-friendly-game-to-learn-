@@ -106,9 +106,14 @@
         document.getElementById('number-guessing-game').style.display = 'none';
     }
 </script>
-
-
-
+    function exitGame() {
+    document.getElementById('quiz-container').innerHTML = ''; // Clear quiz content
+    document.getElementById('start-screen').style.display = 'block';
+    document.getElementById('game-container').style.display = 'none';
+    document.getElementById('memory-game').style.display = 'none';
+    document.getElementById('number-guessing-game').style.display = 'none';
+}
+ 
     function startMemoryGame() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
