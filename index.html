@@ -92,29 +92,17 @@
     </div> <!-- Close Game Container Section -->
 
   <script>
-    function exitGame() {
-        // Reset math quiz content
-        document.getElementById('quiz-container').innerHTML = '';
+    let numberToGuess = Math.floor(Math.random() * 50) + 1; // Set this outside the function
 
-        // Clear game-related session or local storage data
-        sessionStorage.clear();  // or localStorage.clear();
-
-        // Show the start screen again
-        document.getElementById('start-screen').style.display = 'block';
-        document.getElementById('game-container').style.display = 'none';
-        document.getElementById('memory-game').style.display = 'none';
-        document.getElementById('number-guessing-game').style.display = 'none';
-    }
-</script>
-    function exitGame() {
+function exitGame() {
     document.getElementById('quiz-container').innerHTML = ''; // Clear quiz content
     document.getElementById('start-screen').style.display = 'block';
     document.getElementById('game-container').style.display = 'none';
     document.getElementById('memory-game').style.display = 'none';
     document.getElementById('number-guessing-game').style.display = 'none';
 }
- 
-    function startMemoryGame() {
+
+function startMemoryGame() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
     document.getElementById('memory-game').style.display = 'block';
@@ -161,71 +149,31 @@
     }
 }
 
-            let flippedCards = [];
-            const cards = document.querySelectorAll('.card');
+// Shuffle function for Memory Game
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
-            cards.forEach(card => {
-                card.addEventListener('click', () => {
-                    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                        card.classList.add('flipped');
-                        flippedCards.push(card);
+function startNumberGuessingGame() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('game-container').style.display = 'block';
+    document.getElementById('number-guessing-game').style.display = 'block';
+}
 
-                        if (flippedCards.length === 2) {
-                            checkForMatch(flippedCards);
-                        }
-                    }
-                });
-            });
+function checkNumberGuess() {
+    const guess = document.getElementById('guess').value;
+    const feedback = document.getElementById('guess-feedback');
 
-            function checkForMatch(cards) {
-                if (cards[0].textContent === cards[1].textContent) {
-                    flippedCards = [];
-                } else {
-                    setTimeout(() => {
-                        cards[0].classList.remove('flipped');
-                        cards[1].classList.remove('flipped');
-                        flippedCards = [];
-                    }, 1000);
-                }
-            }
-        }
-
-        // Shuffle function for Memory Game
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        // Start Number Guessing Game
-        function startNumberGuessingGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
-            document.getElementById('number-guessing-game').style.display = 'block';
-        }
-
-        // Check Number Guessing Game
-        function checkNumberGuess() {
-            const guess = document.getElementById('guess').value;
-            const numberToGuess = Math.floor(Math.random() * 50) + 1;
-            const feedback = document.getElementById('guess-feedback');
-
-            if (parseInt(guess) === numberToGuess) {
-                feedback.textContent = 'You guessed it right!';
-            } else {
-                feedback.textContent = 'Try again!';
-            }
-        }
-
-        // Exit Game Function
-        function exitGame() {
-            document.getElementById('start-screen').style.display = 'block';
-            document.getElementById('game-container').style.display = 'none';
-            document.getElementById('memory-game').style.display = 'none';
-            document.getElementById('number-guessing-game').style.display = 'none';
-        }
-    </script>
+    if (parseInt(guess) === numberToGuess) {
+        feedback.textContent = 'You guessed it right!';
+    } else {
+        feedback.textContent = 'Try again!';
+    }
+}
+  </script>
 </body> 
 </html>
