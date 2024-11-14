@@ -87,15 +87,6 @@
     </div> <!-- Close Game Container Section -->
 
 <script>
-let numberToGuess = Math.floor(Math.random() * 50) + 1; // Set this inside the script
-
-function exitGame() {
-    document.getElementById('start-screen').style.display = 'block';
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('memory-game').style.display = 'none';
-    document.getElementById('number-guessing-game').style.display = 'none';
-}
-
 function startMemoryGame() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
@@ -111,7 +102,7 @@ function startMemoryGame() {
     shuffledFruits.forEach(fruit => {
         const card = document.createElement('div');
         card.classList.add('card');
-        card.textContent = fruit;
+        card.dataset.fruit = fruit;  // Store the fruit in the data attribute
         memoryBoard.appendChild(card);
     });
 
@@ -122,6 +113,7 @@ function startMemoryGame() {
         card.addEventListener('click', () => {
             if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
                 card.classList.add('flipped');
+                card.textContent = card.dataset.fruit;  // Display the fruit when clicked
                 flippedCards.push(card);
 
                 if (flippedCards.length === 2) {
@@ -138,6 +130,8 @@ function startMemoryGame() {
             setTimeout(() => {
                 cards[0].classList.remove('flipped');
                 cards[1].classList.remove('flipped');
+                cards[0].textContent = '';  // Hide the fruit again
+                cards[1].textContent = '';  // Hide the fruit again
                 flippedCards = [];
             }, 1000);
         }
@@ -153,22 +147,6 @@ function shuffle(array) {
     return array;
 }
 
-function startNumberGuessingGame() {
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('game-container').style.display = 'block';
-    document.getElementById('number-guessing-game').style.display = 'block';
-}
-
-function checkNumberGuess() {
-    const guess = document.getElementById('guess').value;
-    const feedback = document.getElementById('guess-feedback');
-
-    if (parseInt(guess) === numberToGuess) {
-        feedback.textContent = 'You guessed it right!';
-    } else {
-        feedback.textContent = 'Try again!';
-    }
-}
 </script>
 </body>
 </html>
