@@ -91,18 +91,22 @@
         </div> <!-- Close Number Guessing Game Section -->
     </div> <!-- Close Game Container Section -->
 
-    <script>
-      <button onclick="exitGame()">Exit Game</button>
+  <script>
+    function exitGame() {
+        // Reset math quiz content
+        document.getElementById('quiz-container').innerHTML = '';
 
+        // Clear game-related session or local storage data
+        sessionStorage.clear();  // or localStorage.clear();
 
-  function exitGame() {
-    // Clear game-related session or local storage data to reset game state
-    sessionStorage.clear();  // or localStorage.clear();
-
-    // Redirect to the homepage or main menu
-    window.location.href = 'index.html'; // Change this to your desired URL
-  }
+        // Show the start screen again
+        document.getElementById('start-screen').style.display = 'block';
+        document.getElementById('game-container').style.display = 'none';
+        document.getElementById('memory-game').style.display = 'none';
+        document.getElementById('number-guessing-game').style.display = 'none';
+    }
 </script>
+
 
 
         // Function to select Math Quiz
