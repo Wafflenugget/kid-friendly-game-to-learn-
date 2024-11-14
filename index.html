@@ -19,7 +19,7 @@
         .start-btn, .exit-btn {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 30px;
             font-size: 16px;
             margin: 10px;
             border: none;
@@ -58,8 +58,8 @@
         <!-- Memory Game -->
         <div id="memory-game" style="display: none;">
             <h2>Memory Game</h2>
-            <!-- Memory game content will go here -->
-            <button onclick="startMemory()">Start Memory Game</button>
+            <!-- Add your memory game content here -->
+            <button onclick="startMemoryGame()">Start Memory Game</button>
         </div>
 
         <!-- Number Guessing Game -->
@@ -194,4 +194,23 @@
                         answer = num1 + num2;
                     } else if (operation === '-') {
                         question = `What is ${num1} - ${num2}?`;
-                        answer = num1
+                        answer = num1 - num2;
+                    } else if (operation === '*') {
+                        question = `What is ${num1} * ${num2}?`;
+                        answer = num1 * num2;
+                    } else {
+                        question = `What is ${num1} / ${num2}?`;
+                        answer = num1 / num2;
+                    }
+                    questions.push({
+                        question: question,
+                        answer: answer
+                    });
+                }
+            }
+            return questions;
+        }
+
+        // Function to start the memory game (add your memory
+    </html>
+        </body>
