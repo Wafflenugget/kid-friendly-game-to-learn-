@@ -46,38 +46,37 @@
             color: black;
         }
 
-        #quiz-container {
-            display: block;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            max-width: 600px;
-            margin: 50px auto;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            color: black;
+        #memory-game, #quiz-container, #number-guessing-game {
+            display: none;
         }
 
-        input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 100%;
-            margin: 5px 0 20px 0;
+        #memory-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 10px;
+            justify-content: center;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #ddd;
+            text-align: center;
+            font-size: 24px;
+            line-height: 100px;
+            cursor: pointer;
             border-radius: 5px;
-            border: 1px solid #ccc;
+        }
+
+        .flipped {
+            background-color: #fff;
+            color: black;
         }
 
         #quiz-feedback {
             font-size: 18px;
             font-weight: bold;
             margin-top: 20px;
-        }
-
-        button {
-            font-size: 16px;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -97,88 +96,81 @@
         <div id="quiz-container"></div>
 
         <!-- Memory Game -->
-        <div id="memory-game" style="display:none;">
+        <div id="memory-game">
             <h2>Memory Game (Animal Pairs)</h2>
             <div id="memory-board"></div>
-        </div>
-
-        <!-- Number Guessing Game -->
-        <div id="number-guessing-game" style="display:none;">
-            <h2>Number Guessing Game (1-50)</h2>
-            <p>Guess the number between 1 and 50!</p>
-            <input type="number" id="guess" placeholder="Enter your guess" min="1" max="50">
-            <button onclick="checkNumberGuess()">Submit Guess</button>
-            <p id="guess-feedback"></p>
+            <p id="memory-feedback"></p>
         </div>
     </div>
 
     <script>
-        // Function to select Math Quiz
+        let questionIndex = 0;
+        let score = 0;
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function resetGame() {
+            questionIndex = 0;
+            score = 0;
+            flippedCards = [];
+            matchedPairs = 0;
+
+            document.getElementById('quiz-container').innerHTML = '';
+            document.getElementById('quiz-feedback')?.remove();
+            document.getElementById('memory-board').innerHTML = '';
+            document.getElementById('memory-feedback').textContent = '';
+        }
+
         function selectMathQuiz() {
+            resetGame();
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('memory-game').style.display = 'none';
 
-            // Ask for grade and time
             const grade = prompt("Enter grade (1-12):");
-            const timeLimit = prompt("How many minutes would you like to play? (1-5)");
-
-            startMathQuiz(grade, timeLimit);
+            startMathQuiz(grade);
         }
 
-        // Math Quiz
-        function startMathQuiz(grade, timeLimit) {
+        function startMathQuiz(grade) {
             const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade} - Time: ${timeLimit} minutes</h3>`;
+            quizContainer.innerHTML = `<h3>Math Quiz for Grade ${grade}</h3>`;
 
-            // Generate questions based on grade (example for grade 1)
             const questions = generateMathQuestions(grade);
-            let questionIndex = 0;
-            let score = 0;
+            displayQuestion(questions);
+        }
 
-            // Display the first question
-            displayQuestion(questions, questionIndex);
-
-            // Function to display questions
-            function displayQuestion(questions, index) {
-                if (index < questions.length) {
-                    quizContainer.innerHTML += `
-                        <div>
-                            <p>${questions[index].question}</p>
-                            <input type="number" id="answer" placeholder="Your answer">
-                            <button onclick="checkAnswer(${index})">Submit Answer</button>
-                            <p id="quiz-feedback"></p>
-                        </div>
-                    `;
-                } else {
-                    quizContainer.innerHTML += `<p>Your score: ${score}/${questions.length}</p>`;
-                }
-            }
-
-            // Function to check the answer
-            function checkAnswer(index) {
-                const answer = document.getElementById('answer').value;
-                const feedback = document.getElementById('quiz-feedback');
-
-                if (parseInt(answer) === questions[index].answer) {
-                    score++;
-                    feedback.textContent = 'Correct!';
-                } else {
-                    feedback.textContent = 'Incorrect! Try again.';
-                }
-
-                // Move to next question
-                questionIndex++;
-                setTimeout(() => {
-                    quizContainer.innerHTML = ''; // Clear current content
-                    displayQuestion(questions, questionIndex);
-                }, 1000);
+        function displayQuestion(questions) {
+            const quizContainer = document.getElementById('quiz-container');
+            if (questionIndex < questions.length) {
+                quizContainer.innerHTML = `
+                    <h3>Question ${questionIndex + 1}: ${questions[questionIndex].question}</h3>
+                    <input type="number" id="answer" placeholder="Your answer">
+                    <button onclick="submitAnswer(${JSON.stringify(questions)})">Submit Answer</button>
+                    <p id="quiz-feedback"></p>
+                `;
+            } else {
+                quizContainer.innerHTML = `<p>Your score: ${score}/${questions.length}</p>`;
             }
         }
 
-        // Function to generate math questions based on grade
+        function submitAnswer(questions) {
+            const answerInput = document.getElementById('answer');
+            const feedback = document.getElementById('quiz-feedback');
+
+            if (parseInt(answerInput.value) === questions[questionIndex].answer) {
+                score++;
+                feedback.textContent = 'Correct!';
+            } else {
+                feedback.textContent = 'Incorrect! Try again.';
+            }
+
+            questionIndex++;
+            setTimeout(() => displayQuestion(questions), 1000);
+        }
+
         function generateMathQuestions(grade) {
             const questions = [];
-            // Generate 15 questions based on grade level
             for (let i = 0; i < 15; i++) {
                 const num1 = Math.floor(Math.random() * 10) + 1;
                 const num2 = Math.floor(Math.random() * 10) + 1;
@@ -190,28 +182,26 @@
             return questions;
         }
 
-        // Start Memory Game
         function startMemoryGame() {
+            resetGame();
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            const memoryBoard = document.getElementById('memory-board');
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('memory-game').style.display = 'block';
 
             const animals = ['Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe', 'Lion', 'Tiger', 'Elephant', 'Bear', 'Giraffe'];
             const shuffledAnimals = shuffle(animals);
-
-            memoryBoard.innerHTML = '';
-
+            const memoryBoard = document.getElementById('memory-board');
+            
             shuffledAnimals.forEach(animal => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.textContent = animal;
+                card.dataset.animal = animal;
+                card.addEventListener('click', flipCard);
                 memoryBoard.appendChild(card);
             });
-
-            // Add card flip logic and game mechanics here
         }
 
-        // Shuffle function for Memory Game
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -220,30 +210,42 @@
             return array;
         }
 
-        // Start Number Guessing Game
-        function startNumberGuessingGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
-            document.getElementById('number-guessing-game').style.display = 'block';
-        }
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+                this.classList.add('flipped');
+                this.textContent = this.dataset.animal;
+                flippedCards.push(this);
 
-        // Check Number Guessing Game
-        function checkNumberGuess() {
-            const guess = document.getElementById('guess').value;
-            const numberToGuess = Math.floor(Math.random() * 50) + 1;
-            const feedback = document.getElementById('guess-feedback');
-
-            if (parseInt(guess) === numberToGuess) {
-                feedback.textContent = 'You guessed it right!';
-            } else {
-                feedback.textContent = 'Try again!';
+                if (flippedCards.length === 2) {
+                    setTimeout(checkForMatch, 1000);
+                }
             }
         }
 
-        // Exit Game Function
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.animal === card2.dataset.animal) {
+                matchedPairs++;
+                card1.style.visibility = 'hidden';
+                card2.style.visibility = 'hidden';
+                if (matchedPairs === 5) {
+                    document.getElementById('memory-feedback').textContent = 'You found all pairs!';
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.textContent = '';
+                card2.textContent = '';
+            }
+            flippedCards = [];
+        }
+
         function exitGame() {
+            resetGame();
             document.getElementById('start-screen').style.display = 'block';
             document.getElementById('game-container').style.display = 'none';
         }
     </script>
 </body>
+</html>
+
