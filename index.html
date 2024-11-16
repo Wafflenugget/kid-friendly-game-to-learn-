@@ -98,146 +98,141 @@
         </div>
     </div>
 
-<script>
-let gradeLevel;
-let numberToGuess;
+    <script>
+        let gradeLevel; // Variable to store grade level
+        let numberToGuess = Math.floor(Math.random() * 50) + 1; // Random number for guessing game
 
-// Function to exit a game
-function exitGame() {
-    document.getElementById('start-screen').style.display = 'block';
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('memory-game').style.display = 'none';
-    document.getElementById('number-guessing-game').style.display = 'none';
-    document.getElementById('math-quiz-container').style.display = 'none';
-}
+        function askGradeLevel() {
+            gradeLevel = prompt("Please enter your grade level (1-12):");
+            if (gradeLevel < 1 || gradeLevel > 12) {
+                alert("Please enter a valid grade level between 1 and 12.");
+                askGradeLevel();
+            } else {
+                startMathQuiz();
+            }
+        }
 
-// Grade Level and Math Quiz
-function askGradeLevel() {
-    gradeLevel = prompt("Please enter your grade level (1-12):");
-    if (gradeLevel < 1 || gradeLevel > 12) {
-        alert("Please enter a valid grade level between 1 and 12.");
-        askGradeLevel();
-    } else {
-        startMathQuiz();
-    }
-}
+        function startMathQuiz() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('math-quiz-container').style.display = 'block';
+            loadQuestion();
+        }
 
-const questions = [
-    { question: "What is 8 + 5?", answer: 13 },
-    { question: "What is 15 - 6?", answer: 9 },
-    { question: "What is 9 × 7?", answer: 63 },
-    { question: "What is 72 ÷ 9?", answer: 8 },
-];
+        const questions = [
+            { question: "What is 8 + 5?", answer: 13 },
+            { question: "What is 15 - 6?", answer: 9 },
+            { question: "What is 9 × 7?", answer: 63 },
+            { question: "What is 72 ÷ 9?", answer: 8 },
+        ];
 
-let currentQuestionIndex = 0;
+        let currentQuestionIndex = 0;
 
-function startMathQuiz() {
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('game-container').style.display = 'block';
-    document.getElementById('math-quiz-container').style.display = 'block';
-    currentQuestionIndex = 0;
-    loadQuestion();
-}
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            const question = questions[currentQuestionIndex];
+            questionContainer.textContent = question.question;
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').textContent = '';
+        }
 
-function loadQuestion() {
-    const questionContainer = document.getElementById('question-container');
-    const question = questions[currentQuestionIndex];
-    questionContainer.textContent = question.question;
-    document.getElementById('answer').value = '';
-    document.getElementById('feedback').textContent = '';
-}
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            const feedback = document.getElementById('feedback');
 
-function checkAnswer() {
-    const userAnswer = parseInt(document.getElementById('answer').value);
-    const correctAnswer = questions[currentQuestionIndex].answer;
-    const feedback = document.getElementById('feedback');
+            if (userAnswer === correctAnswer) {
+                feedback.textContent = "Correct!";
+                feedback.style.color = "green";
+            } else {
+                feedback.textContent = "Wrong! Try again.";
+                feedback.style.color = "red";
+            }
 
-    if (userAnswer === correctAnswer) {
-        feedback.textContent = "Correct!";
-        feedback.style.color = "green";
-    } else {
-        feedback.textContent = "Wrong! Try again.";
-        feedback.style.color = "red";
-    }
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                feedback.textContent = "Quiz Complete!";
+            }
+        }
 
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        loadQuestion();
-    } else {
-        feedback.textContent = "Quiz Complete!";
-    }
-}
+        function startMemoryGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('memory-game').style.display = 'block';
 
-// Memory Game
-function startMemoryGame() {
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('game-container').style.display = 'block';
-    document.getElementById('memory-game').style.display = 'block';
+            const memoryBoard = document.getElementById('memory-board');
+            memoryBoard.innerHTML = '';
 
-    const memoryBoard = document.getElementById('memory-board');
-    memoryBoard.innerHTML = ''; 
+            const fruits = ['🍎', '🍌', '🍓', '🍉', '🍍', '🍍', '🍎', '🍌', '🍓', '🍉'];
+            const shuffledFruits = shuffle(fruits);
 
-    const fruits = ['🍎', '🍌', '🍓', '🍉', '🍍', '🍍', '🍎', '🍌', '🍓', '🍉'];
-    const shuffledFruits = shuffle(fruits);
+            shuffledFruits.forEach(fruit => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.textContent = fruit;
+                memoryBoard.appendChild(card);
+            });
 
-    shuffledFruits.forEach(fruit => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.textContent = fruit;
-        memoryBoard.appendChild(card);
-    });
+            let flippedCards = [];
+            const cards = document.querySelectorAll('.card');
 
-    let flippedCards = [];
-    const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                        card.style.visibility = 'visible';
+                        card.classList.add('flipped');
+                        flippedCards.push(card);
 
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                card.style.visibility = 'visible'; 
-                card.classList.add('flipped');
-                flippedCards.push(card);
+                        if (flippedCards.length === 2) {
+                            checkForMatch(flippedCards);
+                        }
+                    }
+                });
+            });
 
-                if (flippedCards.length === 2) {
-                    checkForMatch(flippedCards);
+            function checkForMatch(cards) {
+                if (cards[0].textContent === cards[1].textContent) {
+                    flippedCards = [];
+                } else {
+                    setTimeout(() => {
+                        cards[0].style.visibility = 'hidden';
+                        cards[1].style.visibility = 'hidden';
+                        cards[0].classList.remove('flipped');
+                        cards[1].classList.remove('flipped');
+                        flippedCards = [];
+                    }, 1000);
                 }
             }
-        });
-    });
-
-    function checkForMatch(cards) {
-        if (cards[0].textContent === cards[1].textContent) {
-            flippedCards = [];
-        } else {
-            setTimeout(() => {
-                cards[0].style.visibility = 'hidden'; 
-                cards[1].style.visibility = 'hidden';
-                cards[0].classList.remove('flipped');
-                cards[1].classList.remove('flipped');
-                flippedCards = [];
-            }, 1000);
         }
-    }
-}
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-// Number Guessing Game
-function startNumberGuessingGame() {
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('game-container').style.display = 'block';
-    document.getElementById('number-guessing-game').style.display = 'block';
+        function startNumberGuessingGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+            document.getElementById('number-guessing-game').style.display = 'block';
+        }
 
-    numberToGuess = Math.floor(Math.random() * 50) + 1; // Random number between 1 and 50
-}
+        function checkNumberGuess() {
+            const guess = document.getElementById('guess').value;
+            const feedback = document.getElementById('guess-feedback');
 
-function checkNumberGuess() {
-    const guess = parseInt(document.getElementById('guess').
-</script>
-</body>
-</html>
+            if (parseInt(guess) === numberToGuess) {
+                feedback.textContent = 'You guessed it right!';
+                feedback.style.color = 'green';
+            } else {
+                feedback.textContent = 'Try again!';
+                feedback.style.color = 'red';
+            }
+        }
+
+        function exitGame() {
+           
