@@ -1,5 +1,4 @@
-
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,13 +21,13 @@
         .exit-btn, .start-btn {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #ff4d4d;
+            background-color: #4CAF50; /* Green background for buttons */
             color: white;
             border: none;
             cursor: pointer;
         }
         .exit-btn:hover, .start-btn:hover {
-            background-color: #ff1a1a;
+            background-color: #388E3C; /* Darker green on hover */
         }
         #game-container {
             display: none;
@@ -54,11 +53,16 @@
             line-height: 100px;
             cursor: pointer;
             border-radius: 5px;
-            visibility: visible; /* Set to visible initially */
+            visibility: hidden; /* Hide cards initially */
         }
         .flipped {
-            background-color: #fff;
-            color: black;
+            background-color: #4CAF50; /* Green background when card is flipped */
+            color: white; /* White text on green */
+        }
+        #feedback, #guess-feedback {
+            color: green; /* Change feedback text to green */
+            font-size: 18px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -182,6 +186,7 @@ function startMemoryGame() {
     cards.forEach(card => {
         card.addEventListener('click', () => {
             if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                card.style.visibility = 'visible';  // Show card when clicked
                 card.classList.add('flipped');
                 flippedCards.push(card);
 
@@ -228,15 +233,8 @@ function checkNumberGuess() {
 
     if (parseInt(guess) === numberToGuess) {
         feedback.textContent = 'You guessed it right!';
-    } else {
-        feedback.textContent = 'Try again!';
-    }
-}
-
-function exitGame() {
-    document.getElementById('start-screen').style.display = 'block';
-    document.getElementById('game-container').style.display = 'none';
-    document
+        feedback.style.color = 'green';
+    } else
     </script>
 </body>
 </html>
