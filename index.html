@@ -96,13 +96,22 @@
             <button class="btn" onclick="checkAnswer()">Submit Answer</button>
             <p id="feedback"></p>
         </div>
-
     </div>
 
 <script>
-// Grade Level
 let gradeLevel;
+let numberToGuess;
 
+// Function to exit a game
+function exitGame() {
+    document.getElementById('start-screen').style.display = 'block';
+    document.getElementById('game-container').style.display = 'none';
+    document.getElementById('memory-game').style.display = 'none';
+    document.getElementById('number-guessing-game').style.display = 'none';
+    document.getElementById('math-quiz-container').style.display = 'none';
+}
+
+// Grade Level and Math Quiz
 function askGradeLevel() {
     gradeLevel = prompt("Please enter your grade level (1-12):");
     if (gradeLevel < 1 || gradeLevel > 12) {
@@ -113,19 +122,22 @@ function askGradeLevel() {
     }
 }
 
-// Math Quiz Questions
 const questions = [
     { question: "What is 8 + 5?", answer: 13 },
     { question: "What is 15 - 6?", answer: 9 },
     { question: "What is 9 × 7?", answer: 63 },
     { question: "What is 72 ÷ 9?", answer: 8 },
-    { question: "What is x if 3x + 2 = 14?", answer: 4 },
-    { question: "What is x if 2x - 3 = 11?", answer: 7 },
-    { question: "What is x if 5x + 10 = 45?", answer: 7 },
-    { question: "What is 64 ÷ x if x = 8?", answer: 8 },
 ];
 
 let currentQuestionIndex = 0;
+
+function startMathQuiz() {
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('game-container').style.display = 'block';
+    document.getElementById('math-quiz-container').style.display = 'block';
+    currentQuestionIndex = 0;
+    loadQuestion();
+}
 
 function loadQuestion() {
     const questionContainer = document.getElementById('question-container');
@@ -181,7 +193,7 @@ function startMemoryGame() {
     cards.forEach(card => {
         card.addEventListener('click', () => {
             if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                card.style.visibility = 'visible';  // Show card when clicked
+                card.style.visibility = 'visible'; 
                 card.classList.add('flipped');
                 flippedCards.push(card);
 
@@ -197,7 +209,7 @@ function startMemoryGame() {
             flippedCards = [];
         } else {
             setTimeout(() => {
-                cards[0].style.visibility = 'hidden';  // Hide cards again after mismatch
+                cards[0].style.visibility = 'hidden'; 
                 cards[1].style.visibility = 'hidden';
                 cards[0].classList.remove('flipped');
                 cards[1].classList.remove('flipped');
@@ -220,24 +232,12 @@ function startNumberGuessingGame() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('game-container').style.display = 'block';
     document.getElementById('number-guessing-game').style.display = 'block';
+
+    numberToGuess = Math.floor(Math.random() * 50) + 1; // Random number between 1 and 50
 }
 
 function checkNumberGuess() {
-    const guess = document.getElementById('guess').value;
-    const feedback = document.getElementById('guess-feedback');
-
-    if (parseInt(guess) === numberToGuess) {
-        feedback.textContent = 'You guessed it right!';
-    } else {
-        feedback.textContent = 'Try again!';
-    }
-}
-
-function exitGame() {
-    document.getElementById('start-screen').style.display = 'block';
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('memory-game').style.display =
-
-        </script>
-        </body>
-        </html>
+    const guess = parseInt(document.getElementById('guess').
+</script>
+</body>
+</html>
